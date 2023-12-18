@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Car",
+  "description": "Car",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "Car's name",
+      "type": "string"
+    },
+    "speed": {
+      "description": "Car's speed",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "color": {
+      "description": "Car's color",
+      "type": "string"
+    }
+  },
+  "required": ["name", "speed", "color"]
+}

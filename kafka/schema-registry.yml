@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  kafka-schema-registry:
+    image: confluentinc/cp-schema-registry:${CONFLUENT_VERSION}
+    hostname: kafka-schema-registry
+    container_name: kafka-schema-registry
+    ports:
+      - "8081:8081"
+    expose:
+      - 8081
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka101:19092
+      SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_HEAP_OPTS: ${SCHEMA_REGISTRY_HEAP_OPTS}
+    deploy:
+      resources:
+        limits:
+          memory: ${SCHEMA_REGISTRY_MEM_LIMIT}
+    networks:
+      - kafka-cluster
+
+networks:
+  kafka-cluster:
+    name: kafka_kafka-cluster
+    external: true

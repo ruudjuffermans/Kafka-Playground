@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  # consumer:
+  #   container_name: consumer
+  #   build: .
+  #   command: "python ./kafka/consumer/consumer.py ./kafka/config.ini"
+  #   ports:
+  #     - "4000:4000"
+  #   env_file: .env
+  #   networks:
+  #     - "kafka-cluster"
+  #     - "server-layer"
+  producer:
+    container_name: producer
+    build: .
+    command: "python ./run.py ./config.ini"
+    ports:
+      - "4001:4001"
+    env_file: .env
+    networks:
+      - "kafka-cluster"
+      - "server-layer"
+
+networks:
+  kafka-cluster:
+    name: kafka_kafka-cluster
+    external: true
+  server-layer:
+    name: server_layer

@@ -1,0 +1,1 @@
+from .schemaregistry import SchemaRegistry
