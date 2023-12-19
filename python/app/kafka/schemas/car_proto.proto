@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-message Car {
-    string name = 1;
-    int64 speed = 2;
-    string color = 3;
-}

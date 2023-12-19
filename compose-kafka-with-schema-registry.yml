@@ -1,0 +1,119 @@
+version: "3.8"
+services:
+  kafka101:
+    image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
+    ports:
+      - "19092:9092"
+      - "9991:9991"
+    container_name: kafka101
+    expose:
+      - 19092
+    environment:
+      KAFKA_NODE_ID: 101
+      CLUSTER_ID: "xtzWWN4bTjitpL3kfd9s5g"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "101@kafka101:19093,102@kafka102:29093,103@kafka103:39093"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_JMX_PORT: 9991
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka101:19092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_LISTENERS: "PLAINTEXT://kafka101:19092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://kafka101:19093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka101:19092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: "false"
+      KAFKA_HEAP_OPTS: ${KAFKA_BROKER_HEAP_OPTS}
+    deploy:
+      resources:
+        limits:
+          memory: ${KAFKA_BROKER_MEM_LIMIT}
+    networks:
+      - kafka-cluster
+
+  kafka102:
+    image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
+    ports:
+      - "29092:9092"
+      - "9992:9992"
+    container_name: kafka102
+    expose:
+      - 29092
+    environment:
+      KAFKA_NODE_ID: 102
+      CLUSTER_ID: "xtzWWN4bTjitpL3kfd9s5g"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "101@kafka101:19093,102@kafka102:29093,103@kafka103:39093"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_JMX_PORT: 9992
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka102:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_LISTENERS: "PLAINTEXT://kafka102:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://kafka102:29093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka102:29092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: "false"
+      KAFKA_HEAP_OPTS: ${KAFKA_BROKER_HEAP_OPTS}
+    deploy:
+      resources:
+        limits:
+          memory: ${KAFKA_BROKER_MEM_LIMIT}
+    networks:
+      - kafka-cluster
+
+  kafka103:
+    image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
+    ports:
+      - "39092:9092"
+      - "9993:9993"
+    container_name: kafka103
+    expose:
+      - 39092
+    environment:
+      KAFKA_NODE_ID: 103
+      CLUSTER_ID: "xtzWWN4bTjitpL3kfd9s5g"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "101@kafka101:19093,102@kafka102:29093,103@kafka103:39093"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_JMX_PORT: 9993
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka103:39092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_LISTENERS: "PLAINTEXT://kafka103:39092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://kafka103:39093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka103:39092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: "false"
+      KAFKA_HEAP_OPTS: ${KAFKA_BROKER_HEAP_OPTS}
+    deploy:
+      resources:
+        limits:
+          memory: ${KAFKA_BROKER_MEM_LIMIT}
+    networks:
+      - kafka-cluster
+  services:
+    kafka-schema-registry:
+      image: confluentinc/cp-schema-registry:${CONFLUENT_VERSION}
+      hostname: kafka-schema-registry
+      container_name: kafka-schema-registry
+      ports:
+        - "8081:8081"
+      expose:
+        - 8081
+      environment:
+        SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka101:19092
+        SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
+        SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+        SCHEMA_REGISTRY_HEAP_OPTS: ${SCHEMA_REGISTRY_HEAP_OPTS}
+      deploy:
+        resources:
+          limits:
+            memory: ${SCHEMA_REGISTRY_MEM_LIMIT}
+      networks:
+        - kafka-cluster
+networks:
+  kafka-cluster:
